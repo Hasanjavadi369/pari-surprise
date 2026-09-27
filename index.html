@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>برای پری 🌷</title>
+<style>
+*{box-sizing:border-box}
+body{
+margin:0;min-height:100vh;overflow:hidden;
+display:flex;align-items:center;justify-content:center;
+font-family:Tahoma;background:radial-gradient(circle,#382052,#11101c 60%,#07070c);
+color:white
+}
+.card{
+width:90%;max-width:480px;padding:35px 25px;text-align:center;
+border-radius:28px;background:#ffffff10;
+border:1px solid #ffffff20;backdrop-filter:blur(15px);
+box-shadow:0 20px 80px #0008
+}
+h1{font-size:38px}
+p{font-size:18px;line-height:2;color:#ddd}
+button{
+border:0;border-radius:50px;padding:14px 27px;margin-top:15px;
+font-size:16px;color:white;cursor:pointer;
+background:linear-gradient(135deg,#a94cff,#ff5fa8)
+}
+.hidden{display:none}
+.fade{animation:fade .8s ease}
+@keyframes fade{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:none}}
+
+.bouquet{height:210px;width:220px;margin:auto;position:relative}
+.flower{position:absolute;font-size:55px;animation:f 2.5s infinite}
+.f1{left:20px;top:50px}.f2{left:75px;top:10px}.f3{left:130px;top:50px}
+.f4{left:55px;top:90px}.f5{left:110px;top:90px}
+@keyframes f{50%{transform:translateY(-12px) rotate(3deg)}}
+.stem{position:absolute;width:5px;height:105px;background:#4c9b58;left:105px;bottom:5px}
+.wrap{
+position:absolute;bottom:0;left:60px;width:105px;height:65px;
+background:linear-gradient(135deg,#f6a6d8,#9565d8);
+clip-path:polygon(10% 0,90% 0,70% 100%,30% 100%)
+}
+textarea{
+width:100%;height:120px;margin-top:10px;border:1px solid #ffffff20;
+border-radius:18px;padding:15px;background:#ffffff12;color:white;
+font:16px Tahoma;resize:none;outline:none
+}
+textarea::placeholder{color:#aaa}
+.petal{position:fixed;top:-30px;animation:fall linear infinite;opacity:.7}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:0}}
+</style>
+</head>
+
+<body>
+
+<div id="petals"></div>
+
+<div class="card" id="p1">
+<h1>🌙 پری</h1>
+<p>حوصله نداری؟</p>
+<p>پس فقط چند ثانیه اینجا بمون :)</p>
+<button onclick="go(1)">یه چیز کوچیک برات دارم 🌸</button>
+</div>
+
+<div class="card hidden" id="p2">
+<h1>🌷</h1>
+<div class="bouquet">
+<div class="flower f1">🌷</div>
+<div class="flower f2">🌸</div>
+<div class="flower f3">🌷</div>
+<div class="flower f4">🌹</div>
+<div class="flower f5">🌸</div>
+<div class="stem"></div>
+<div class="wrap"></div>
+</div>
+<p>قرار نیست همیشه حوصله داشته باشی :)</p>
+<button onclick="go(2)">خب... یه چیز دیگه 👀</button>
+</div>
+
+<div class="card hidden" id="p3">
+<h1>😂🌸</h1>
+<p>خب... حداقل ۳۰ ثانیه از بی‌حوصلگیت کم شد؟</p>
+<button onclick="question()">حالا یه سوال 👀</button>
+
+<div id="q" class="hidden">
+<p>اگه می‌تونستی همین الان یه چیزی داشته باشی که حالت رو بهتر کنه، چی بود؟ 🌱</p>
+<textarea id="msg" maxlength="1000" placeholder="جوابت رو اینجا بنویس..."></textarea>
+<button onclick="send()">جوابم اینه 🌷</button>
+<p id="result"></p>
+</div>
+</div>
+
+<script>
+function go(n){
+document.getElementById("p"+n).classList.add("hidden");
+let x=document.getElementById("p"+(n+1));
+x.classList.remove("hidden");
+x.classList.add("fade");
+}
+
+function question(){
+document.getElementById("q").classList.remove("hidden");
+}
+
+async function send(){
+let msg=document.getElementById("msg").value.trim();
+let result=document.getElementById("result");
+
+if(!msg){
+result.innerText="یه چیزی بنویس دیگه 😂";
+return;
+}
+
+result.innerText="دارم می‌فرستم... 🌸";
+
+try{
+let r=await fetch("/send",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({message:msg})
+});
+
+let data=await r.json();
+
+if(data.success){
+document.getElementById("msg").value="";
+result.innerText="پیامت رسید 🌷";
+}else{
+result.innerText="یه مشکلی پیش اومد 😅";
+}
+}catch(e){
+result.innerText="ارتباط برقرار نشد 😅";
+}
+}
+
+const flowers=["🌸","🌷","✨","💮"];
+
+for(let i=0;i<30;i++){
+let x=document.createElement("div");
+x.className="petal";
+x.innerText=flowers[Math.floor(Math.random()*flowers.length)];
+x.style.left=Math.random()*100+"vw";
+x.style.fontSize=(14+Math.random()*15)+"px";
+x.style.animationDuration=(5+Math.random()*7)+"s";
+x.style.animationDelay=Math.random()*7+"s";
+document.getElementById("petals").appendChild(x);
+}
+</script>
+
+</body>
+</html>
